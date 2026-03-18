@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-(g_2shpepe=4_&(5j%h&eiv=+l8t=s&vg&@@d+&vk!ysycp3l^')
 
-DEBUG = True
+DEBUG = False
 
 # Get your local IP dynamically
 import socket
@@ -30,13 +30,11 @@ def get_local_ip():
 LOCAL_IP = get_local_ip()
 
 # Add all possible hosts
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '0.0.0.0',
-    LOCAL_IP,
-    '*',  # Temporarily allow all for testing
-]
+ALLOWED_HOSTS=['cryonexes.com', 'www.cryonexes.com',
+                                'localhost',
+               '127.0.0.1'
+               ]
+
 
 # Application definition
 INSTALLED_APPS = [
