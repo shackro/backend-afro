@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: cryonexes-backend
+    env: python
+    buildCommand: |
+      cd backend
+      chmod +x build.sh
+      ./build.sh
+    startCommand: cd backend && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT
+    healthCheckPath: /api/products/
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: false
+      - key: ALLOWED_HOSTS
+        value: .onrender.com,cryonexes.com,www.cryonexes.com
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://cryonexes.com,https://www.cryonexes.com,https://cryonexes-frontend.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cryonexes-db
+          property: connectionString
+
+  - type: web
+    name: cryonexes-frontend
+    env: static
+    buildCommand: |
+      cd frontend
+      npm install
+      npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://cryonexes-backend.onrender.com/api
+
+databases:
+  - name: cryonexes-db
+    databaseName: cryonexes
+    user: cryonexes_user
