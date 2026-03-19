@@ -2,10 +2,11 @@ services:
   - type: web
     name: cryonexes-backend
     env: python
+    rootDir: backend  # <--- THIS IS THE CRITICAL LINE
     buildCommand: |
-      cd backend
       chmod +x build.sh
       ./build.sh
+    startCommand: gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT
     healthCheckPath: /api/products/
     envVars:
       - key: SECRET_KEY
@@ -24,11 +25,11 @@ services:
   - type: web
     name: cryonexes-frontend
     env: static
+    rootDir: frontend # <--- Add this for the frontend as well, if it exists
     buildCommand: |
-      cd frontend
       npm install
       npm run build
-    staticPublishPath: ./frontend/dist
+    staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
         value: https://cryonexes-backend.onrender.com/api
