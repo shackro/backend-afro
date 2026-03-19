@@ -6,7 +6,6 @@ services:
       cd backend
       chmod +x build.sh
       ./build.sh
-    startCommand: cd backend && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT
     healthCheckPath: /api/products/
     envVars:
       - key: SECRET_KEY
