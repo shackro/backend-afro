@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
-import dj_database_url  # Add this import
 
 load_dotenv()
 
@@ -12,7 +11,25 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-(g_2shpepe=4_&(5j%h
 
 DEBUG = False
 
-# FIXED: ALLOWED_HOSTS - remove https:// prefixes
+# Get your local IP dynamically
+import socket
+
+
+def get_local_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = '127.0.0.1'
+    finally:
+        s.close()
+    return ip
+
+
+LOCAL_IP = get_local_ip()
+
+# Add all possible hosts
 ALLOWED_HOSTS = [
     'cryonexes.com',
     'www.cryonexes.com',
@@ -27,6 +44,7 @@ CSRF_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -52,9 +70,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # This should be at the top
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ADD THIS for static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -83,24 +100,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# FIXED: Database configuration for Render
-if os.environ.get('DATABASE_URL'):
-    # Production - PostgreSQL on Render
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=os.environ.get('DATABASE_URL'),
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    # Local development - SQLite
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -122,17 +127,16 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS settings - FIXED: Add your frontend domains
+# CRITICAL: CORS settings - FIXED VERSION
+# CORS_ALLOW_ALL_ORIGINS = True  # For development ONLY - this will fix your issue
 CORS_ALLOWED_ORIGINS = [
     'https://cryonexes.com',
     'https://www.cryonexes.com',
@@ -141,8 +145,6 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
 
-# Keep this temporarily, but remove after testing
-CORS_ALLOW_ALL_ORIGINS = True  # REMOVE THIS AFTER TESTING
 
 CORS_ALLOW_CREDENTIALS = True
 
