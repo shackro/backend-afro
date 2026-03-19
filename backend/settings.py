@@ -35,6 +35,7 @@ ALLOWED_HOSTS = [
     'www.cryonexes.com',
     'afroconnect-1v4p.onrender.com',  # Your Render backend URL
     'afroconnect.vercel.app',
+    'afroconnect-drab.vercel.app',
     'localhost',
     '127.0.0.1',
 ]
@@ -142,6 +143,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://cryonexes.com',
     'https://www.cryonexes.com',
     'afroconnect.vercel.app',
+    'afroconnect-drab.vercel.app',
     'https://cryonexes-frontend.onrender.com',  # Your frontend URL
     'http://localhost:5173',
     'http://localhost:3000',
