@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [
     'cryonexes.com',
     'www.cryonexes.com',
     'afroconnect-1v4p.onrender.com',  # Your Render backend URL
+    'afroconnect.vercel.app',
     'localhost',
     '127.0.0.1',
 ]
@@ -140,6 +141,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     'https://cryonexes.com',
     'https://www.cryonexes.com',
+    'afroconnect.vercel.app',
     'https://cryonexes-frontend.onrender.com',  # Your frontend URL
     'http://localhost:5173',
     'http://localhost:3000',
